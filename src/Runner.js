@@ -23,30 +23,15 @@ export default class Duxy {
   }
 
   resources (name, options, fn) {
-    const resources = new Resources(this.current, name, options, fn)
-    this.current.runnables.push(resources)
-
-    this.stack.push(resources)
-    resources.run()
-    this.stack.pop()
+    this.addRunnable(new Resources(this.current, name, options, fn))
   }
 
   resource (name, options, fn) {
-    const resource = new Resource(this.current, name, options, fn)
-    this.current.runnables.push(resource)
-
-    this.stack.push(resource)
-    resource.run()
-    this.stack.pop()
+    this.addRunnable(new Resource(this.current, name, options, fn))
   }
 
   namespace (name, options, fn) {
-    const namespace = new Namespace(this.current, name, options, fn)
-    this.current.runnables.push(namespace)
-
-    this.stack.push(namespace)
-    namespace.run()
-    this.stack.pop()
+    this.addRunnable(new Namespace(this.current, name, options, fn))
   }
 
   get (name) {
@@ -84,5 +69,13 @@ export default class Duxy {
 
   member (name, method) {
     this.current.members.push({ name, path: name, method, force: true })
+  }
+
+  addRunnable (collection) {
+    this.current.runnables.push(collection)
+
+    this.stack.push(collection)
+    collection.run()
+    this.stack.pop()
   }
 }
