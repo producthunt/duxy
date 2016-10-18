@@ -1,9 +1,40 @@
-import Collection from './Collection'
+import invariant from 'invariant'
+import joinUrl from 'url-join'
 
-export default class Namespace extends Collection {
+import Runnable from './Runnable'
+
+export default class Namespace extends Runnable {
   constructor (parent, name, options, fn) {
-    super(parent, name, options, fn)
+    super()
+
+    invariant(parent, '`parent` is required')
+    invariant(name, 'You must specify a name for the given resource or namespace')
+
+    this.parent = parent
+    this.name = name
     this.finders = []
+
+    if (typeof fn === 'function') {
+      this.fn = fn
+      this.options = options
+    } else if (typeof options === 'function') {
+      this.options = {}
+      this.fn = options
+    } else if (!options) {
+      this.options = {}
+    } else {
+      this.options = options
+    }
+
+    const path = this.options.path || this.name
+
+    if (parent instanceof Namespace) {
+      this.path = joinUrl(parent.path, parent.key(), path)
+    } else if (path.indexOf('http') === 0) {
+      this.path = path
+    } else {
+      this.path = joinUrl(parent.path, path)
+    }
   }
 
   key () {

@@ -1,6 +1,6 @@
-import Collection from './Collection'
+import Namespace from './Namespace'
 
-export default class Resource extends Collection {
+export default class Resource extends Namespace {
   constructor (parent, name, options, fn) {
     super(parent, name, options, fn)
 

@@ -1,8 +1,8 @@
 import inflection from 'inflection'
 
-import Collection from './Collection'
+import Namespace from './Namespace'
 
-export default class Resources extends Collection {
+export default class Resources extends Namespace {
   constructor (parent, name, options, fn) {
     super(parent, name, options, fn)
 
