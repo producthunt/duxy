@@ -1,7 +1,7 @@
 import { expect, spy } from './helper'
 import createClient from '../src'
 
-describe('crud', () => {
+describe('resources', () => {
   describe('findOne', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
