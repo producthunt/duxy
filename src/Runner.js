@@ -1,5 +1,6 @@
 import Namespace from './Namespace'
 import Resources from './Resources'
+import Resource from './Resource'
 import Root from './Root'
 
 export default class Duxy {
@@ -11,6 +12,7 @@ export default class Duxy {
 
     // NOTE(vesln): DSL methods
     this.resources = this.resources.bind(this)
+    this.resource = this.resource.bind(this)
     this.namespace = this.namespace.bind(this)
     this.get = this.get.bind(this)
     this.post = this.post.bind(this)
@@ -26,6 +28,15 @@ export default class Duxy {
 
     this.stack.push(resources)
     resources.run()
+    this.stack.pop()
+  }
+
+  resource (name, options, fn) {
+    const resource = new Resource(this.current, name, options, fn)
+    this.current.runnables.push(resource)
+
+    this.stack.push(resource)
+    resource.run()
     this.stack.pop()
   }
 
