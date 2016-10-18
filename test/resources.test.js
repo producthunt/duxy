@@ -1,33 +1,62 @@
 import { expect, spy } from './helper'
 import createClient from '../src'
 
-describe('resource', () => {
+describe('resources', () => {
   describe('findOne', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource, get }) => {
-        resource('subscription')
+      const client = createClient({ http }, ({ resources, get }) => {
+        resources('posts')
       })
 
-      client.subscription.findOne({ query: true })
+      client.posts.findOne({ id: 1, query: true })
 
       expect(http).to.have.been.called.with({
         method: 'GET',
-        url: '/subscription/',
+        url: '/posts/1',
+        body: undefined,
+        query: { query: true, id: 1 }
+      })
+    })
+
+    it('throws if the method is not allowed', () => {
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findAll'] })
+      })
+
+      expect(() => {
+        client.posts.findOne()
+      }).to.throw('`findOne()` is not allowed on this resource')
+    })
+  })
+
+  describe('findAll', () => {
+    it('call the the http adapter with correct params', () => {
+      const http = spy()
+
+      const client = createClient({ http }, ({ resources, get }) => {
+        resources('posts')
+      })
+
+      client.posts.findAll({ query: true })
+
+      expect(http).to.have.been.called.with({
+        method: 'GET',
+        url: '/posts/',
         body: undefined,
         query: { query: true }
       })
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('subscription', { only: [] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {
-        client.subscription.findOne()
-      }).to.throw('`findOne()` is not allowed on this resource')
+        client.posts.findAll()
+      }).to.throw('`findAll()` is not allowed on this resource')
     })
   })
 
@@ -35,27 +64,27 @@ describe('resource', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource }) => {
-        resource('subscription')
+      const client = createClient({ http }, ({ resources }) => {
+        resources('posts')
       })
 
-      client.subscription.create({ body: true }, { query: true })
+      client.posts.create({ body: true }, { query: true })
 
       expect(http).to.have.been.called.with({
         method: 'POST',
-        url: '/subscription/',
+        url: '/posts/',
         body: { body: true },
         query: { query: true }
       })
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('subscription', { only: ['findOne'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {
-        client.subscription.create()
+        client.posts.create()
       }).to.throw('`create()` is not allowed on this resource')
     })
   })
@@ -64,27 +93,27 @@ describe('resource', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource }) => {
-        resource('subscription')
+      const client = createClient({ http }, ({ resources }) => {
+        resources('posts')
       })
 
-      client.subscription.update({ body: true }, { query: true })
+      client.posts.update({ id: 1, body: true }, { query: true })
 
       expect(http).to.have.been.called.with({
         method: 'PUT',
-        url: '/subscription/',
-        body: { body: true },
+        url: '/posts/1',
+        body: { body: true, id: 1 },
         query: { query: true }
       })
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('subscription', { only: ['findOne'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {
-        client.subscription.update()
+        client.posts.update()
       }).to.throw('`update()` is not allowed on this resource')
     })
   })
@@ -93,27 +122,27 @@ describe('resource', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource }) => {
-        resource('subscription')
+      const client = createClient({ http }, ({ resources }) => {
+        resources('posts')
       })
 
-      client.subscription.delete({ id: 1, body: true }, { query: true })
+      client.posts.delete({ id: 1, body: true }, { query: true })
 
       expect(http).to.have.been.called.with({
         method: 'DELETE',
-        url: '/subscription/',
+        url: '/posts/1',
         body: { body: true, id: 1 },
         query: { query: true }
       })
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('subscription', { only: ['findOne'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {
-        client.subscription.delete()
+        client.posts.delete()
       }).to.throw('`delete()` is not allowed on this resource')
     })
   })
