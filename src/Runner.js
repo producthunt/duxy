@@ -5,21 +5,21 @@ import Root from './Root'
 
 export default class Duxy {
   constructor (options = {}) {
+    this.dsl = {
+      resources: this.resources.bind(this),
+      resource: this.resource.bind(this),
+      namespace: this.namespace.bind(this),
+      get: this.get.bind(this),
+      post: this.post.bind(this),
+      put: this.put.bind(this),
+      patch: this.patch.bind(this),
+      del: this.del.bind(this),
+      map: this.map.bind(this),
+    }
+
     this.options = options
-
-    this.root = new Root(this, options.http)
+    this.root = new Root(this.dsl, options.http)
     this.stack = [this.root]
-
-    // NOTE(vesln): DSL methods
-    this.resources = this.resources.bind(this)
-    this.resource = this.resource.bind(this)
-    this.namespace = this.namespace.bind(this)
-    this.get = this.get.bind(this)
-    this.post = this.post.bind(this)
-    this.put = this.put.bind(this)
-    this.patch = this.patch.bind(this)
-    this.del = this.del.bind(this)
-    this.map = this.map.bind(this)
   }
 
   resources (name, options, fn) {
