@@ -3,7 +3,7 @@ import Resources from './Resources'
 import Resource from './Resource'
 import Root from './Root'
 
-export default class Duxy {
+export default class Runner {
   constructor (options = {}) {
     this.dsl = {
       resources: this.resources.bind(this),
