@@ -21,6 +21,25 @@ describe('members', () => {
     })
   })
 
+  it('supports path option', () => {
+    const http = spy()
+
+    const client = createClient({ http }, ({ resources, get }) => {
+      resources('posts', { only: ['findOne'] }, () => {
+        get('edit', { path: '{id}/edit' })
+      })
+    })
+
+    client.posts.edit({ id: 1, foo: true })
+
+    expect(http).to.have.been.called.with({
+      method: 'GET',
+      url: '/posts/1/edit',
+      body: undefined,
+      query: { id: 1, foo: true }
+    })
+  })
+
   describe('readers', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()

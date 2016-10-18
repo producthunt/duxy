@@ -34,24 +34,24 @@ export default class Runner {
     this.addRunnable(new Namespace(this.current, name, options, fn))
   }
 
-  get (name) {
-    this.member(name, 'GET')
+  get (name, options) {
+    this.member(name, options, 'GET')
   }
 
-  post (name) {
-    this.member(name, 'POST')
+  post (name, options) {
+    this.member(name, options, 'POST')
   }
 
-  put (name) {
-    this.member(name, 'PUT')
+  put (name, options) {
+    this.member(name, options, 'PUT')
   }
 
-  patch (name) {
-    this.member(name, 'PATCH')
+  patch (name, options) {
+    this.member(name, options, 'PATCH')
   }
 
-  del (name) {
-    this.member(name, 'DELETE')
+  del (name, options) {
+    this.member(name, options, 'DELETE')
   }
 
   map (name, fn) {
@@ -67,8 +67,9 @@ export default class Runner {
     return this.stack[0].draw({})
   }
 
-  member (name, method) {
-    this.current.members.push({ name, path: name, method, force: true })
+  member (name, options, method) {
+    const path = options && options.path || name
+    this.current.members.push({ name, path, method, force: true })
   }
 
   addRunnable (collection) {
