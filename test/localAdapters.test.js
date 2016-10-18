@@ -6,9 +6,9 @@ describe('localAdapters', () => {
     const http = spy()
     const localHttp = spy()
 
-    const client = createClient({ http }, ({ namespace, resource }) => {
+    const client = createClient({ http }, ({ namespace, resources }) => {
       namespace('posts', { http: localHttp }, () => {
-        resource('users')
+        resources('users')
       })
     })
 

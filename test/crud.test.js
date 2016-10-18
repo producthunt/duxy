@@ -6,8 +6,8 @@ describe('crud', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource, get }) => {
-        resource('posts')
+      const client = createClient({ http }, ({ resources, get }) => {
+        resources('posts')
       })
 
       client.posts.findOne({ id: 1, query: true })
@@ -21,8 +21,8 @@ describe('crud', () => {
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('posts', { only: ['findAll'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findAll'] })
       })
 
       expect(() => {
@@ -35,8 +35,8 @@ describe('crud', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource, get }) => {
-        resource('posts')
+      const client = createClient({ http }, ({ resources, get }) => {
+        resources('posts')
       })
 
       client.posts.findAll({ query: true })
@@ -50,8 +50,8 @@ describe('crud', () => {
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('posts', { only: ['findOne'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {
@@ -64,8 +64,8 @@ describe('crud', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource }) => {
-        resource('posts')
+      const client = createClient({ http }, ({ resources }) => {
+        resources('posts')
       })
 
       client.posts.create({ body: true }, { query: true })
@@ -79,8 +79,8 @@ describe('crud', () => {
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('posts', { only: ['findOne'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {
@@ -93,8 +93,8 @@ describe('crud', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource }) => {
-        resource('posts')
+      const client = createClient({ http }, ({ resources }) => {
+        resources('posts')
       })
 
       client.posts.update({ id: 1, body: true }, { query: true })
@@ -108,8 +108,8 @@ describe('crud', () => {
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('posts', { only: ['findOne'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {
@@ -122,8 +122,8 @@ describe('crud', () => {
     it('call the the http adapter with correct params', () => {
       const http = spy()
 
-      const client = createClient({ http }, ({ resource }) => {
-        resource('posts')
+      const client = createClient({ http }, ({ resources }) => {
+        resources('posts')
       })
 
       client.posts.delete({ id: 1, body: true }, { query: true })
@@ -137,8 +137,8 @@ describe('crud', () => {
     })
 
     it('throws if the method is not allowed', () => {
-      const client = createClient(({ resource, get }) => {
-        resource('posts', { only: ['findOne'] })
+      const client = createClient(({ resources, get }) => {
+        resources('posts', { only: ['findOne'] })
       })
 
       expect(() => {

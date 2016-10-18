@@ -2,7 +2,7 @@ import inflection from 'inflection'
 
 import Collection from './Collection'
 
-export default class Resource extends Collection {
+export default class Resources extends Collection {
   constructor (parent, name, options, fn) {
     super(parent, name, options, fn)
 

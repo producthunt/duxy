@@ -3,26 +3,26 @@ import createClient from '../src'
 
 describe('paths', () => {
   it('handles unspecified paths', () => {
-    const client = createClient(({ resource }) => {
-      resource('users')
+    const client = createClient(({ resources }) => {
+      resources('users')
     })
 
     expect(client.users.__path).to.equal('/users')
   })
 
   it('handles named paths', () => {
-    const client = createClient(({ resource }) => {
-      resource('users', { path: 'people' })
+    const client = createClient(({ resources }) => {
+      resources('users', { path: 'people' })
     })
 
     expect(client.users.__path).to.equal('/people')
   })
 
   it('handles nested paths', () => {
-    const client = createClient(({ resource, namespace }) => {
+    const client = createClient(({ resources, namespace }) => {
       namespace('api', () => {
-        resource('users', { path: 'people' }, () => {
-          resource('posts')
+        resources('users', { path: 'people' }, () => {
+          resources('posts')
         })
       })
     })
@@ -31,9 +31,9 @@ describe('paths', () => {
   })
 
   it('handles full paths', () => {
-    const client = createClient(({ resource, namespace }) => {
+    const client = createClient(({ resources, namespace }) => {
       namespace('example', { path: 'http://example.com/' }, () => {
-        resource('users')
+        resources('users')
       })
     })
 
