@@ -1,21 +1,14 @@
-import inflection from 'inflection'
+import Namespace from './Namespace'
 
-import Collection from './Collection'
-
-export default class Resource extends Collection {
+export default class Resource extends Namespace {
   constructor (parent, name, options, fn) {
     super(parent, name, options, fn)
 
     this.finders = [
-      { name: 'findOne', method: 'GET', path: '{id}' },
-      { name: 'findAll', method: 'GET', path: null },
+      { name: 'findOne', method: 'GET', path: null },
       { name: 'create', method: 'POST', path: null },
-      { name: 'update', method: 'PUT', path: '{id}' },
-      { name: 'delete', method: 'DELETE', path: '{id}' }
+      { name: 'update', method: 'PUT', path: null },
+      { name: 'delete', method: 'DELETE', path: null }
     ]
-  }
-
-  key () {
-    return '{' + (this.options.key || `${inflection.singularize(this.name)}Id`) + '}'
   }
 }

@@ -3,9 +3,9 @@ import createClient from '../src'
 
 describe('drawing', () => {
   it('can register top level resources', () => {
-    const client = createClient(({ resource }) => {
-      resource('users')
-      resource('posts')
+    const client = createClient(({ resources }) => {
+      resources('users')
+      resources('posts')
     })
 
     expect(client.users).to.exist
@@ -13,9 +13,9 @@ describe('drawing', () => {
   })
 
   it('can register nested resources', () => {
-    const client = createClient(({ resource }) => {
-      resource('users', () => {
-        resource('posts')
+    const client = createClient(({ resources }) => {
+      resources('users', () => {
+        resources('posts')
       })
     })
 
@@ -24,10 +24,10 @@ describe('drawing', () => {
   })
 
   it('can register a namespace', () => {
-    const client = createClient(({ resource, namespace }) => {
+    const client = createClient(({ resources, namespace }) => {
       namespace('api', () => {
-        resource('users', () => {
-          resource('posts')
+        resources('users', () => {
+          resources('posts')
         })
       })
     })
@@ -37,8 +37,8 @@ describe('drawing', () => {
   })
 
   it('can register members', () => {
-    const client = createClient(({ resource, get }) => {
-      resource('users', () => {
+    const client = createClient(({ resources, get }) => {
+      resources('users', () => {
         get('latest')
       })
     })

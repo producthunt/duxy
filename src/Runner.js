@@ -1,61 +1,57 @@
 import Namespace from './Namespace'
+import Resources from './Resources'
 import Resource from './Resource'
 import Root from './Root'
 
-export default class Duxy {
+export default class Runner {
   constructor (options = {}) {
+    this.dsl = {
+      resources: this.resources.bind(this),
+      resource: this.resource.bind(this),
+      namespace: this.namespace.bind(this),
+      get: this.get.bind(this),
+      post: this.post.bind(this),
+      put: this.put.bind(this),
+      patch: this.patch.bind(this),
+      del: this.del.bind(this),
+      map: this.map.bind(this),
+    }
+
     this.options = options
-
-    this.root = new Root(this, options.http)
+    this.root = new Root(this.dsl, options.http)
     this.stack = [this.root]
+  }
 
-    // NOTE(vesln): DSL methods
-    this.resource = this.resource.bind(this)
-    this.namespace = this.namespace.bind(this)
-    this.get = this.get.bind(this)
-    this.post = this.post.bind(this)
-    this.put = this.put.bind(this)
-    this.patch = this.patch.bind(this)
-    this.del = this.del.bind(this)
-    this.map = this.map.bind(this)
+  resources (name, options, fn) {
+    this.addRunnable(new Resources(this.current, name, options, fn))
   }
 
   resource (name, options, fn) {
-    const resource = new Resource(this.current, name, options, fn)
-    this.current.runnables.push(resource)
-
-    this.stack.push(resource)
-    resource.run()
-    this.stack.pop()
+    this.addRunnable(new Resource(this.current, name, options, fn))
   }
 
   namespace (name, options, fn) {
-    const namespace = new Namespace(this.current, name, options, fn)
-    this.current.runnables.push(namespace)
-
-    this.stack.push(namespace)
-    namespace.run()
-    this.stack.pop()
+    this.addRunnable(new Namespace(this.current, name, options, fn))
   }
 
-  get (name) {
-    this.member(name, 'GET')
+  get (name, options) {
+    this.member(name, options, 'GET')
   }
 
-  post (name) {
-    this.member(name, 'POST')
+  post (name, options) {
+    this.member(name, options, 'POST')
   }
 
-  put (name) {
-    this.member(name, 'PUT')
+  put (name, options) {
+    this.member(name, options, 'PUT')
   }
 
-  patch (name) {
-    this.member(name, 'PATCH')
+  patch (name, options) {
+    this.member(name, options, 'PATCH')
   }
 
-  del (name) {
-    this.member(name, 'DELETE')
+  del (name, options) {
+    this.member(name, options, 'DELETE')
   }
 
   map (name, fn) {
@@ -71,7 +67,16 @@ export default class Duxy {
     return this.stack[0].draw({})
   }
 
-  member (name, method) {
-    this.current.members.push({ name, path: name, method, force: true })
+  member (name, options, method) {
+    const path = options && options.path || name
+    this.current.members.push({ name, path, method, force: true })
+  }
+
+  addRunnable (collection) {
+    this.current.runnables.push(collection)
+
+    this.stack.push(collection)
+    collection.run()
+    this.stack.pop()
   }
 }
