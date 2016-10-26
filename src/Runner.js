@@ -14,7 +14,7 @@ export default class Runner {
       put: this.put.bind(this),
       patch: this.patch.bind(this),
       del: this.del.bind(this),
-      map: this.map.bind(this),
+      map: this.map.bind(this)
     }
 
     this.options = options
