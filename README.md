@@ -7,7 +7,7 @@ RESTful resources.
 ## Table of Contents
 
   1. [Installation](#installation)
-  1. [Setup](#setup)
+  1. [Usage](#usage)
   1. [Development](#development)
   1. [Contributing](#contributing)
   1. [License](#license)
@@ -20,7 +20,42 @@ $ npm install duxy --save
 
 ## Usage
 
-`TODO`
+#### Setup
+
+```js
+// api.js
+import duxy from 'duxy';
+import duxySuperagent from 'duxy-superagent';
+import request from 'superagent';
+
+const http = duxySuperagent(superagent)();
+
+export default duxy({ http }, ({ get, resources }) => {
+  resources('topics', { only: ['findAll', 'findOne'] }, () => {
+      resource('topContributors', { path: 'top_contributors', only: ['findAll'] });
+      resource('followers', { only: ['create', 'delete'] });
+  });
+});
+```
+
+#### Usage
+
+```js
+import api from 'ph/api';
+
+const { body } = api.context();                              // GET /context
+const { body: { data } } = api.topics.findOne({ id: 1 })     // GET /topics/1
+const { body: { data } } = api.topics.findAll({ limit: 10 }) // GET /topics?limit=10
+```
+
+```js
+try {
+  await api.topics.followers.create({ topicId: 1 }); // POST /topics/1/followers
+} catch(e) {
+  const { response: { body: { errors } } } = e;
+  // handle errors
+}
+```
 
 ## Development
 
