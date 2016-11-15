@@ -8,7 +8,6 @@ RESTful resources.
 
   1. [Installation](#installation)
   1. [Usage](#usage)
-  1. [Development](#development)
     1. [Setup](#setup)
     1. [Usage](#usage-1)
     1. [DSL](#dsl)
@@ -21,6 +20,7 @@ RESTful resources.
       1. [resources](#resourcesname--path-only-findone-findall-create-update-delete-fn)
       1. [resource](#resourcename--path-only-findone-create-update-delete--fn)
     1. [Adapter](#adapter)
+  1. [Development](#development)
   1. [Contributing](#contributing)
   1. [License](#license)
 
