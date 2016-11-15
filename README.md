@@ -31,9 +31,10 @@ import request from 'superagent';
 const http = duxySuperagent(superagent)();
 
 export default duxy({ http }, ({ get, resources }) => {
-  resources('topics', { only: ['findAll', 'findOne'] }, () => {
-      resource('topContributors', { path: 'top_contributors', only: ['findAll'] });
-      resource('followers', { only: ['create', 'delete'] });
+  get('about');
+
+  resources('posts', { only: ['findAll', 'findOne'] }, () => {
+    resource('followers', { only: ['create', 'delete'] });
   });
 });
 ```
@@ -43,18 +44,160 @@ export default duxy({ http }, ({ get, resources }) => {
 ```js
 import api from 'ph/api';
 
-const { body } = api.context();                              // GET /context
-const { body: { data } } = api.topics.findOne({ id: 1 })     // GET /topics/1
-const { body: { data } } = api.topics.findAll({ limit: 10 }) // GET /topics?limit=10
+const { body } = api.about()                      // GET /about
+const { body } = api.posts.findOne({ id: 1 })     // GET /posts/1
+const { body } = api.posts.findAll({ limit: 10 }) // GET /posts?limit=10
+```
+#### DSL
+
+##### `get(name, { path })`
+
+```js
+export default duxy(options, ({ get }) => {
+  get('root', { path: '/'});
+  get('search');
+});
+```
+
+```js
+api.root()                  // GET /
+api.search({ query: 'foo'}) // GET /search?query=foo
+```
+
+##### `post(name, { path })`
+
+```js
+export default duxy(options, ({ post }) => {
+  post('create')
+  post('createPost', { path: '/posts' });
+});
 ```
 
 ```js
 try {
-  await api.topics.followers.create({ topicId: 1 }); // POST /topics/1/followers
+  const { body } = await api.createPost({ title, name }); // POST /posts
+  // handle response
 } catch(e) {
   const { response: { body: { errors } } } = e;
   // handle errors
 }
+```
+
+##### `put(name, { path })`
+
+```js
+export default duxy(options, ({ post }) => {
+  put('update')
+  put('updatePost', { path: '/posts' });
+});
+```
+
+```js
+try {
+  const { body } = await api.updatePost({ id, title, name }); // PUT /posts
+  // handle response
+} catch(e) {
+  const { response: { body: { errors } } } = e;
+  // handle errors
+}
+```
+
+##### `patch(name, { path })`
+
+```js
+export default duxy(options, ({ post }) => {
+  patch('update')
+  patch('updatePost', { path: '/posts' });
+});
+```
+
+```js
+try {
+  const { body } = await api.updatePost({ id, title, name }); // PATCH /posts
+  // handle response
+} catch(e) {
+  const { response: { body: { errors } } } = e;
+  // handle errors
+}
+```
+
+##### `del(name, { path })`
+
+```js
+export default duxy(options, ({ del }) => {
+  del('posts');
+});
+```
+
+```js
+api.del()  // DELETE /posts
+```
+
+##### `namespace(name, { path }, fn)`
+
+```js
+export default duxy(options, ({ get, patch namespace }) => {
+  namespace('my', () => {
+    get('profile');
+    namespace('settings', () => {
+      patch('edit');
+    });
+  });
+});
+```
+
+```js
+api.my.profile()        // GET /my/profile
+api.my.settings.edit()  // PATCH /my/settings/edit
+```
+
+##### `resources(name, { path, only: ['findOne', 'findAll', 'create', 'update', 'delete']}, fn)`
+
+```js
+export default duxy(options, ({ get, resource }) => {
+  resources('users', () => {
+    get('moreInfo', { path: 'info' });
+  });
+});
+```
+
+```js
+api.users.findAll({ id: 1 });        // GET /users
+api.users.findOne({ id: 1 });        // GET /users/1
+api.users.create({ id: 1, name });   // POST /users/1
+api.users.update({ id: 1, name });   // PUT /users/1
+api.users.delete({ id: 1 });         // DELETE /users/1
+api.users.moreInfo({ userId: 1 });   // GET /users/1/info
+```
+
+##### `resource(name, { path, only: ['findOne', 'create', 'update', 'delete'] }, fn)`
+
+```js
+export default duxy(options, ({ resources, resource }) => {
+  resources('users', { only: ['findOne'] }, () => {
+    resource('followers', { path: 'following', only: ['findOne', 'create', 'delete'] });
+  });
+});
+```
+
+```js
+api.users.followers.findOne({ userId: 1 });  // GET /users/1/following
+api.users.followers.create({ userId: 1 });   // POST /users/1/following
+api.users.followers.delete({ userId: 1 });   // DELETE /users/1/following
+```
+
+#### Adapter
+
+```
+const http = ({ method, url, body, query }) => {
+  return new Promise((resolve, reject) => {
+    // should be
+    // resolve({ body: responseBody });
+    // reject({ request: { body: responseBody } });
+  });
+};
+
+export default duxy({ http }, definition);
 ```
 
 ## Development
