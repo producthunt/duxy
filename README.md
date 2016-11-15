@@ -212,6 +212,23 @@ const http = ({ method, url, body, query }) => {
 export default duxy({ http }, definition);
 ```
 
+__Superagent adapter__
+
+```
+$ npm install duxy-superagent --save
+```
+
+```js
+// api.js
+import duxy from 'duxy';
+import duxySuperagent from 'duxy-superagent';
+import request from 'superagent';
+
+const http = duxySuperagent(superagent)();
+
+export default duxy({ http }, definition);
+```
+
 ## Development
 
 #### Setup
