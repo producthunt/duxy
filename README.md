@@ -11,14 +11,14 @@ RESTful resources.
     1. [Setup](#setup)
     1. [Usage](#usage-1)
     1. [DSL](#dsl)
+      1. [resources](#resourcesname--path-only-findone-findall-create-update-delete-fn)
+      1. [resource](#resourcename--path-only-findone-create-update-delete--fn)
+      1. [namespace](#namespacename--path--fn)
       1. [get](#getname--path-)
       1. [post](#postname--path-)
       1. [put](putname--path-)
       1. [patch](#patchname--path-)
       1. [del](#delname--path-)
-      1. [namespace](#namespacename--path--fn)
-      1. [resources](#resourcesname--path-only-findone-findall-create-update-delete-fn)
-      1. [resource](#resourcename--path-only-findone-create-update-delete--fn)
     1. [Adapter](#adapter)
   1. [Development](#development)
   1. [Contributing](#contributing)
@@ -56,112 +56,11 @@ export default duxy({ http }, ({ get, resources }) => {
 ```js
 import api from 'ph/api';
 
-const { body } = api.about()                      // GET /about
-const { body } = api.posts.findOne({ id: 1 })     // GET /posts/1
-const { body } = api.posts.findAll({ limit: 10 }) // GET /posts?limit=10
+const { body } = api.about();                      // GET /about
+const { body } = api.posts.findOne({ id: 1 });     // GET /posts/1
+const { body } = api.posts.findAll({ limit: 10 }); // GET /posts?limit=10
 ```
 #### DSL
-
-##### `get(name, { path })`
-
-```js
-export default duxy(options, ({ get }) => {
-  get('root', { path: '/'});
-  get('search');
-});
-```
-
-```js
-api.root()                  // GET /
-api.search({ query: 'foo'}) // GET /search?query=foo
-```
-
-##### `post(name, { path })`
-
-```js
-export default duxy(options, ({ post }) => {
-  post('create')
-  post('createPost', { path: '/posts' });
-});
-```
-
-```js
-try {
-  const { body } = await api.createPost({ title, name }); // POST /posts
-  // handle response
-} catch(e) {
-  const { response: { body: { errors } } } = e;
-  // handle errors
-}
-```
-
-##### `put(name, { path })`
-
-```js
-export default duxy(options, ({ post }) => {
-  put('update')
-  put('updatePost', { path: '/posts' });
-});
-```
-
-```js
-try {
-  const { body } = await api.updatePost({ id, title, name }); // PUT /posts
-  // handle response
-} catch(e) {
-  const { response: { body: { errors } } } = e;
-  // handle errors
-}
-```
-
-##### `patch(name, { path })`
-
-```js
-export default duxy(options, ({ post }) => {
-  patch('update')
-  patch('updatePost', { path: '/posts' });
-});
-```
-
-```js
-try {
-  const { body } = await api.updatePost({ id, title, name }); // PATCH /posts
-  // handle response
-} catch(e) {
-  const { response: { body: { errors } } } = e;
-  // handle errors
-}
-```
-
-##### `del(name, { path })`
-
-```js
-export default duxy(options, ({ del }) => {
-  del('posts');
-});
-```
-
-```js
-api.del()  // DELETE /posts
-```
-
-##### `namespace(name, { path }, fn)`
-
-```js
-export default duxy(options, ({ get, patch namespace }) => {
-  namespace('my', () => {
-    get('profile');
-    namespace('settings', () => {
-      patch('edit');
-    });
-  });
-});
-```
-
-```js
-api.my.profile()        // GET /my/profile
-api.my.settings.edit()  // PATCH /my/settings/edit
-```
 
 ##### `resources(name, { path, only: ['findOne', 'findAll', 'create', 'update', 'delete']}, fn)`
 
@@ -198,12 +97,113 @@ api.users.followers.create({ userId: 1 });   // POST /users/1/following
 api.users.followers.delete({ userId: 1 });   // DELETE /users/1/following
 ```
 
+##### `namespace(name, { path }, fn)`
+
+```js
+export default duxy(options, ({ get, patch namespace }) => {
+  namespace('my', () => {
+    get('profile');
+    namespace('settings', () => {
+      patch('edit');
+    });
+  });
+});
+```
+
+```js
+api.my.profile();        // GET /my/profile
+api.my.settings.edit();  // PATCH /my/settings/edit
+```
+
+##### `get(name, { path })`
+
+```js
+export default duxy(options, ({ get }) => {
+  get('root', { path: '/' });
+  get('search');
+});
+```
+
+```js
+api.root();                   // GET /
+api.search({ query: 'foo' }); // GET /search?query=foo
+```
+
+##### `post(name, { path })`
+
+```js
+export default duxy(options, ({ post }) => {
+  post('create');
+  post('createPost', { path: '/posts' });
+});
+```
+
+```js
+try {
+  const { body } = await api.createPost({ title, name }); // POST /posts
+  // handle response
+} catch(e) {
+  const { response: { body: { errors } } } = e;
+  // handle errors
+}
+```
+
+##### `put(name, { path })`
+
+```js
+export default duxy(options, ({ post }) => {
+  put('update');
+  put('updatePost', { path: '/posts' });
+});
+```
+
+```js
+try {
+  const { body } = await api.updatePost({ id, title, name }); // PUT /posts
+  // handle response
+} catch(e) {
+  const { response: { body: { errors } } } = e;
+  // handle errors
+}
+```
+
+##### `patch(name, { path })`
+
+```js
+export default duxy(options, ({ post }) => {
+  patch('update');
+  patch('updatePost', { path: '/posts' });
+});
+```
+
+```js
+try {
+  const { body } = await api.updatePost({ id, title, name }); // PATCH /posts
+  // handle response
+} catch(e) {
+  const { response: { body: { errors } } } = e;
+  // handle errors
+}
+```
+
+##### `del(name, { path })`
+
+```js
+export default duxy(options, ({ del }) => {
+  del('posts');
+});
+```
+
+```js
+api.del();  // DELETE /posts
+```
+
 #### Adapter
 
 ```
 const http = ({ method, url, body, query }) => {
   return new Promise((resolve, reject) => {
-    // should be
+    // should be:
     // resolve({ body: responseBody });
     // reject({ request: { body: responseBody } });
   });
