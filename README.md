@@ -40,9 +40,9 @@ import duxy from 'duxy';
 import duxySuperagent from 'duxy-superagent';
 import request from 'superagent';
 
-const http = duxySuperagent(superagent)();
+const http = duxySuperagent(request)(() => {});
 
-export default duxy({ http }, ({ get, resources }) => {
+export default duxy({ http }, ({ get, resources, resource }) => {
   get('about');
 
   resources('posts', { only: ['findAll', 'findOne'] }, () => {
@@ -65,7 +65,7 @@ const { body } = api.posts.findAll({ limit: 10 }); // GET /posts?limit=10
 ##### `resources(name, { path, only: ['findOne', 'findAll', 'create', 'update', 'delete']}, fn)`
 
 ```js
-export default duxy(options, ({ get, resource }) => {
+export default duxy(options, ({ get, resources }) => {
   resources('users', () => {
     get('moreInfo', { path: 'info' });
   });
@@ -100,7 +100,7 @@ api.users.followers.delete({ userId: 1 });   // DELETE /users/1/following
 ##### `namespace(name, { path }, fn)`
 
 ```js
-export default duxy(options, ({ get, patch namespace }) => {
+export default duxy(options, ({ get, patch, namespace }) => {
   namespace('my', () => {
     get('profile');
     namespace('settings', () => {
@@ -151,7 +151,7 @@ try {
 ##### `put(name, { path })`
 
 ```js
-export default duxy(options, ({ post }) => {
+export default duxy(options, ({ put }) => {
   put('update');
   put('updatePost', { path: '/posts' });
 });
@@ -170,7 +170,7 @@ try {
 ##### `patch(name, { path })`
 
 ```js
-export default duxy(options, ({ post }) => {
+export default duxy(options, ({ patch }) => {
   patch('update');
   patch('updatePost', { path: '/posts' });
 });
@@ -224,7 +224,7 @@ import duxy from 'duxy';
 import duxySuperagent from 'duxy-superagent';
 import request from 'superagent';
 
-const http = duxySuperagent(superagent)();
+const http = duxySuperagent(request)(() => {});
 
 export default duxy({ http }, definition);
 ```
